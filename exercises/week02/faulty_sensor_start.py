@@ -12,6 +12,7 @@ De agent moet:
 4. Als de betrouwbare hoogtemeter daalt: een correctie aanvragen
    (actuator).
 """
+
 from typing import Optional
 
 
@@ -46,11 +47,14 @@ class FaultTolerantAgent:
 
     def __init__(self):
         # TODO: interne state — welke variabelen heb je nodig?
+        self.previous_height = None
+        self.suspect_sensor = None
         pass
 
     def read_all(self, p: Reading) -> tuple[float, float]:
         """Sensors: geef beide metingen terug."""
         # TODO
+        return p.sensor_a, p.sensor_b
         pass
 
     def reliable_value(self, a: float, b: float, previous: Optional[float]) -> float:
@@ -63,26 +67,64 @@ class FaultTolerantAgent:
         - Is er geen vorige waarde (eerste meetslag)? -> kies
           bij voorkeur sensor a.
         """
-        # TODO: implementeer dit 
+        # TODO: implementeer dit
+        # Als we al weten welke sensor verdacht is, gebruiken we de andere.
+        if self.suspect_sensor == "a":
+            return b
+        if self.suspect_sensor == "b":
+            return a
+
+        # De sensoren komen overeen: neem het gemiddelde.
+        if (
+            abs(a - b) <= self.TOLERANCE
+        ):  # TIP MENEER : Dit is de manier hoe je kan controleren of 2 waarden dicht bij elkaar zitten
+            return (a + b) / 2
+
+        # De sensoren spreken elkaar tegen.
+        if previous is None:
+            self.suspect_sensor = "b"
+            return a
+
+        # Kies de meting die het dichtst bij de vorige betrouwbare hoogte ligt.
+        if abs(a - previous) <= abs(b - previous):
+            self.suspect_sensor = "b"
+            return a
+        else:
+            self.suspect_sensor = "a"
+            return b
 
     def process(self, p: Reading):
         # TODO: kies de betrouwbare meting, bepaal de trend (delta t.o.v.
         #       de vorige waarde) en vraag correctie aan als de daling
         #       sneller is dan DESCENT_LIMIT. Vergeet de interne state
         #       niet bij te werken.
+
+        a, b = self.read_all(p)
+        height = self.reliable_value(a, b, self.previous_height)
+
+        if self.previous_height is None:
+            self.previous_height = height
+            return Nothing()
+
+        change = height - self.previous_height
+        self.previous_height = height
+
+        if change < self.DESCENT_LIMIT:
+            return Correct()
+
         return Nothing()
 
 
 if __name__ == "__main__":
     # Vluchtprofiel: klim, cruise, daal. Sensor A valt uit bij stap 4.
     vlucht = [
-        Reading(1000, 1000),   # beide ok
-        Reading(1020, 1025),   # beide ok, stijgende trend
-        Reading(1050, 1048),   # beide ok
-        Reading(1055, 600),    # sensor B stuk (of is het A?)
-        Reading(1040, 100),    # sensor B blijft onzin
-        Reading(1020, 50),     # daling wordt nu zichtbaar via A
-        Reading(1000, 30),     # dalende trend -> correctie nodig
+        Reading(1000, 1000),  # beide ok
+        Reading(1020, 1025),  # beide ok, stijgende trend
+        Reading(1050, 1048),  # beide ok
+        Reading(1055, 600),  # sensor B stuk (of is het A?)
+        Reading(1040, 100),  # sensor B blijft onzin
+        Reading(1020, 50),  # daling wordt nu zichtbaar via A
+        Reading(1000, 30),  # dalende trend -> correctie nodig
     ]
 
     agent = FaultTolerantAgent()

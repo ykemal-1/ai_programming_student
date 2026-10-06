@@ -9,6 +9,7 @@ Voor de route Antwerpen -> Parijs is een interessante utility:
 De agent zoekt NIET (dit doen we in week 3): bij elke stap kiest hij greedy de
 buur met de hoogste utility (kleinste afstand).
 """
+
 from typing import Optional
 
 CITIES = ["Antwerpen", "Brussel", "Gent", "Luik", "Doornik", "Reims", "Parijs"]
@@ -42,24 +43,57 @@ class RouteAgent:
 
     def utility(self, from_city: str, to_city: str) -> float:
         """TODO: geef -d(from_city, to_city) terug."""
-        return 0.0
+        d = distance(from_city, to_city)
+        if d is None:
+            raise ValueError(f"Geen directe weg tussen {from_city} en {to_city}")
+
+        return -d
 
     def neighbours(self, city: str) -> list[str]:
         """TODO: geef alle steden met een directe weg naar `city`."""
-        return []
+        result = []
+
+        for a, b in ROADS:
+            if a == city:
+                result.append(b)
+            elif b == city:
+                result.append(a)
+        return result
 
     def choose_next(self, current_city: str, visited: set[str]) -> Optional[str]:
         """TODO: kies onder de niet-bezochte buren de buur met de
         hoogste utility. Geen buren meer? -> None.
         """
-        return None
+        available = [
+            city for city in self.neighbours(current_city) if city not in visited
+        ]
+
+        if not available:
+            return None
+
+        return max(available, key=lambda city: self.utility(current_city, city))
 
     def plan_route(self, start_city: str, goal_city: str) -> list[str]:
         """TODO: bouw de route stad per stad via choose_next.
 
         Stop zodra de goal bereikt is of de agent vastzit.
         """
-        return [start_city]
+
+        route = [start_city]
+        visited = {start_city}
+        current_city = start_city
+
+        while current_city != goal_city:
+            next_city = self.choose_next(current_city, visited)
+
+            if next_city is None:
+                break
+
+            route.append(next_city)
+            visited.add(next_city)
+            current_city = next_city
+
+        return route
 
 
 if __name__ == "__main__":
