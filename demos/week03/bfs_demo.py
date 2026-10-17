@@ -4,7 +4,8 @@ BFS opent de frontier niveau per niveau en vindt zo het pad
 met het minste aantal steden.
 """
 
-from demos.week03.graaf import DOEL, START, STEDEN_GRAAF, breadth_first_search
+# from demos.week03.graaf_start import DOEL, START, STEDEN_GRAAF, breadth_first_search
+from graaf_start import DOEL, START, STEDEN_GRAAF, breadth_first_search
 
 
 def main() -> None:

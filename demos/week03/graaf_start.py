@@ -55,7 +55,7 @@ class Node:
 
     def __init__(self, state: State, parent: "Node | None" = None) -> None:
         self.state = state
-        self.actions: list[Node] = []
+        self.actions: list[Node] = []  # buren van een node in een graaf
         # Extra t.o.v. de cursustekst: parent-verwijzing om het pad te reconstrueren
         self.parent = parent
 
@@ -65,12 +65,23 @@ class Node:
 
 def bouw_nodes(graaf: dict[str, list[str]]) -> dict[str, Node]:
     """Vertaal de adjacency-dict naar Node-objecten met acties."""
-    pass
+    nodes = {stad: Node(State(stad)) for stad in graaf}
+    for stad, buurnodes in graaf.items():
+        # buren toevoegen
+        for buur in buurnodes:
+            nodes[stad].add_action(nodes[buur])
+    return nodes
 
 
 def reconstruct_pad(node: Node) -> list[str]:
     """Bouw het gevonden pad op via de parent-verwijzingen."""
-    pass
+    pad = []
+
+    while node is not None:
+        pad.append(node.state.name)
+        node = node.parent
+
+    return pad
 
 
 def breadth_first_search(
@@ -79,7 +90,39 @@ def breadth_first_search(
     """BFS volgens de cursustekst: openklappen niveau per niveau via een FIFO-queue.
     Vindt het pad met het minste aantal steden.
     """
-    pass
+
+    nodes = bouw_nodes(graaf)
+    initial_node = nodes[start]  # de NODE antwerpen
+    goal_node = nodes[doel]  # de NODE Parijs
+
+    frontier = deque([initial_node])
+    visited = set(initial_node.state.name)
+    niveau = 0  # geen functie, maar handig voor debugging
+    niveau_lijst = [niveau]
+
+    # loop maken
+    while frontier:  # zoalng de frontier niet leeg is, doe ...
+        # welke node ?
+        node = frontier.popleft()
+        niveau = niveau_lijst.popleft()
+
+        # checl of dit de oplossing is
+        if node.state.name == goal_node.state.name:
+            return reconstruct_pad(node)  # we zijn klaar
+
+        # we zijn nog niet in Parijs
+        visited.add(node)
+
+        # node openklappen
+        for neighbor in node.actions:
+            if neighbor not in visited:
+                frontier.append(neighbor)
+                if neighbor.parent is None:
+                    neighbor.parent = node
+
+    # wat gebeurt er hier?
+    # heel het geconnecteerde deel met initial state gezien (en oplossing niet gevonden)
+    return None
 
 
 def depth_first_search(
