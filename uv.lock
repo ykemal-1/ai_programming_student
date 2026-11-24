@@ -22,6 +22,7 @@ dependencies = [
     { name = "pandas" },
     { name = "pillow" },
     { name = "psutil" },
+    { name = "pygad" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "python-dateutil" },
@@ -43,6 +44,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.0.3" },
     { name = "pillow", specifier = ">=10.0.1" },
     { name = "psutil", specifier = ">=5.9.0" },
+    { name = "pygad", specifier = ">=3.0.0" },
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=5.0" },
     { name = "python-dateutil", specifier = ">=2.8.2" },
@@ -759,7 +761,7 @@ name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "ptyprocess" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [
@@ -887,6 +889,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/1b/7d/92392ff7815c21062bea51aa7b87d45576f649f16458d78b7cf94b9ab2e6/pycparser-3.0.tar.gz", hash = "sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29", size = 103492, upload-time = "2026-01-21T14:26:51.89Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl", hash = "sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992", size = 48172, upload-time = "2026-01-21T14:26:50.693Z" },
+]
+
+[[package]]
+name = "pygad"
+version = "3.9.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cloudpickle" },
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/b0/8ce1ef4f00c891d6c7c5322f751305995712e40f0df843e38d33d9ea4457/pygad-3.9.2.tar.gz", hash = "sha256:3f064e79a5a1ca98f673993485f721e0217ed7b4de5a4fd3b6ed7936ade654da", size = 351511, upload-time = "2026-10-16T21:07:51.331Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/63/49876cbd83f92faa9f8edaebc9e6955fffae0c9e59899237115e228e24a0/pygad-3.9.2-py3-none-any.whl", hash = "sha256:f9666d850b465c34ed7ff7faed1737e72ccc97ac9055fe3106b436aae2d4390c", size = 226516, upload-time = "2026-10-16T21:07:49.696Z" },
 ]
 
 [[package]]
